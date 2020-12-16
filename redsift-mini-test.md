@@ -161,6 +161,13 @@ Extract out Sarah and Jane's phone numbers from this string
 
 ```javascript
 const task4 = `{"sarah": {"phone": "077 123 4567", "email": "sarah@yahoo.com" }, "jane": {"phone": "021 465 1203"}}`;
+
+const phoneBook = JSON.parse(task4);
+const phones = Object.entries(phoneBook);
+
+for(let key, val of phones) {
+  console.log(`${key}: ${val.phone}`);
+}
 ```
 
 ## Task 5
@@ -175,6 +182,15 @@ const task5 = [
   "Super Cool Dude <supercooldude@hotmail.com>",
   "Our super secret login details are username: secret@email.com password: secretp@ssword",
 ];
+
+emailAddresses = [];
+task5.forEach((sentence) => {
+  const emailRegexp = /[a-z0-9]+?\@[a-z0-9]+?\.\w{2,8}/i;
+  const matches = sentence.match(emailRegexp);
+  emailAddresses = [...emailAddresses, ...matches];
+});
+
+console.log({ emailAddresses });
 ```
 
 ## Task 6
@@ -197,6 +213,56 @@ const task6 = () => {
     }, 2000);
   });
 };
+
+function getData(maxRetries = 10, retryCount = 0) {
+  const handleError = (error = "") => {
+    if (retryCount < maxRetries) {
+      console.log("retrying because: " + error);
+      getData(maxRetries, retryCount + 1);
+    }
+  };
+
+  task6()
+    .then((text) => {
+      const data = JSON.parse(text);
+      const { body } = data;
+
+      if (body.status === "ok") {
+        console.log(body.info);
+      } else {
+        console.log("retrying");
+        handleError();
+      }
+    })
+    .catch((e) => {
+      console.log("retrying");
+      handleError(e);
+    });
+}
+
+//async/await way
+
+async function getData(maxRetries = 10, retryCount = 0) {
+  const handleError = () => {
+    if (retryCount < maxRetries) {
+      console.log("retrying");
+      getData(maxRetries, retryCount + 1);
+    }
+  };
+  try {
+    const text = await task6();
+    const data = JSON.parse(text);
+    const { body } = data;
+
+    if (body.status === "ok") {
+      console.log(body.info);
+    } else {
+      handleError();
+    }
+  } catch (e) {
+    handleError(e);
+  }
+}
 ```
 
 ## Task 7
@@ -229,6 +295,13 @@ function task7_b(input) {
 }
 ```
 
+task 7_a has two loops where i grows linearly with the input
+so the complexity is `O(n) + O(n) := O(2n) := O(n)`
+
+task 7_b has one loop where the number of statements grows linearly with the input.
+This loop is embedded into a similar loop, where each iteration of the parent loop will generate a loop the size of the input
+So the complexity is `O(n) \* O(n) := O(n*n) := O(n^2)`
+
 ## Task 8
 
 Find the first recurring character of the below lists
@@ -240,4 +313,23 @@ task8 = [
   [2,3,4,5], Should return undefined
   [2,5,5,2,3,5,1,2,4] Should return 5
 ]
+const result = [];
+for (const task of task8) {
+  const recur = new Set();
+  let recurrent;
+  for(const el of task) {
+    if(recur.size == 0) {
+      recur.add(el);
+    }else {
+      if(recur.has(el)) {
+        recurrent = el;
+        break;
+      } else {
+        recur.add(el);
+      }
+    }
+  }
+
+  result.push(recurrent);
+}
 ```
