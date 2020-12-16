@@ -139,6 +139,20 @@ const task3 = [
   "pear",
   "pear",
 ];
+
+const task3Set = new Set(task3);
+let myMap = new Map();
+
+for (let elem of task3Set) {
+  let stack = [];
+  task3.forEach((el) => {
+    if (el === elem) {
+      stack.push(el);
+    }
+  });
+
+  myMap.set(elem, stack.length);
+}
 ```
 
 ## Task 4
