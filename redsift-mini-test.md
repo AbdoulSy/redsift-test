@@ -15,7 +15,29 @@ print 'two' if it divides by two with no remaining
 'twofive' if it divides by both 'two' and 'five with no remaining.
 
 ```javascript
-const task1 = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
+const task1 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+```
+
+The response
+
+```javascript
+/**
+ * @type Array<number> task1
+ **/
+const task1 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+/**
+ * Function two five
+ * @param {number} n The number being evaluated
+ * @returns {string}
+ **/
+const twoFive = (n) => (
+  (n%2 === 0 ? 'Two' | '') +
+  (n%5 === 0 ? 'Five' | '')
+) || n;
+
+const task1Result = task1.map(twoFive);
+
+console.log(task1Result);
 ```
 
 ## Task 2
@@ -51,7 +73,7 @@ const task2 = [
   ["Sydney, Australia"],
   ["Kyoto, Japan"],
   ["Tokyo, Japan"],
-  ["Brisbane, Australia"]
+  ["Brisbane, Australia"],
 ];
 ```
 
@@ -85,7 +107,7 @@ const task3 = [
   "pineapple",
   "lemon",
   "pear",
-  "pear"
+  "pear",
 ];
 ```
 
@@ -107,7 +129,7 @@ const task5 = [
   "sdifjoweij34190 1ej1o3 team@redsift.io (127.0.0.0.1)",
   "Please contact us on help@redsift.io or support@redsift.io",
   "Super Cool Dude <supercooldude@hotmail.com>",
-  "Our super secret login details are username: secret@email.com password: secretp@ssword"
+  "Our super secret login details are username: secret@email.com password: secretp@ssword",
 ];
 ```
 
@@ -125,7 +147,7 @@ const task6 = () => {
       }
       resolve(
         JSON.stringify({
-          body: { status: "ok", info: ["Sally", "Sarah", "Sam", "Stacey"] }
+          body: { status: "ok", info: ["Sally", "Sarah", "Sam", "Stacey"] },
         })
       );
     }, 2000);
@@ -143,7 +165,6 @@ function task7_a(input) {
     let x = i + 1;
     let y = i + 2;
     let z = i + 3;
-
   }
   for (let j = 0; j < input; j++) {
     let p = j * 2;
@@ -156,7 +177,7 @@ function task7_b(input) {
     let x = i + 1;
     let y = i + 2;
     let z = i + 3;
-  for (let j = 0; j < input; j++) {
+    for (let j = 0; j < input; j++) {
       let p = j * 2;
       let q = j * 2;
     }
