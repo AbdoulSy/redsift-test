@@ -1,0 +1,6 @@
+{
+	"accountId": "<YOUR EMAIL>",
+	"auth": {
+		"password": "<YOUR ACCESS TOKEN>"
+	}
+}

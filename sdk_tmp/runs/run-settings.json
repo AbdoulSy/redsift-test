@@ -1,0 +1,10 @@
+{
+	"secrets": {
+		"local": {}
+	},
+	"azure_active_directoryAppCreated": false,
+	"googleAppCreated": false,
+	"slackAppCreated": false,
+	"watchMode": true,
+	"autoRefreshEnabled": true
+}
