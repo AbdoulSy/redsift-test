@@ -75,6 +75,36 @@ const task2 = [
   ["Tokyo, Japan"],
   ["Brisbane, Australia"],
 ];
+
+let countries = new Set();
+let citiesByCountry = new Map();
+let task2Map = new Map(task2);
+const addCity = (set, country, city, locality) => {
+  const toAdd = `${city}${locality}`;
+
+  return set.has(country) ? set.get(country).add(toAdd) : new Set([toAdd]);
+};
+
+for (let [cityCountry] of task2Map) {
+  const locations = cityCountry.split(", ");
+  const [city, countryOrLocality, countryOrNull] = locations;
+  const hasLocality = locations.length > 2;
+  const countryElement = hasLocality ? countryOrNull : countryOrLocality;
+  const localityElement = hasLocality ? ` (${countryOrLocality})` : "";
+  const officialCountry = countryElement === "UK" ? "United Kingdom" : countryElement;
+
+  citiesByCountry.set(officialCountry, addCity(citiesByCountry, countryElement, city, localityElement));
+}
+
+const sortedCountries = Array.from(citiesByCountry).sort();
+
+//render solution
+sortedCountries.map((c) => {
+  const [con, ci] = c;
+  const li = Array.from(ci);
+
+  console.log(`${con}: ${li.join(",")}`);
+});
 ```
 
 ## Task 3
