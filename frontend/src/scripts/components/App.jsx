@@ -1,26 +1,44 @@
 // @ts-nocheck
 /* eslint no-console: 0 */
 
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import PropTypes from 'prop-types';
 import { translate } from 'react-i18next';
 import moment from "moment";
 
 
-const Message = ({message, key}) => {
+const Message = ({message}) => {
   console.log("MSG", {message});
-  return <li className="message">
-    <div className="sender">
-      {message.from.name}
+  const { from, subject, date } = message;
+  const [shouldExpandMessage, toggleExpandMessage] = useState(false);
+  const [shouldDisplayValidation, toggleDisplayValidation] = useState(false);
+  const maybeExpandMessage = `message ${shouldExpandMessage ? ' expanded': ''}`;
+  const messageClassNames = `${maybeExpandMessage}${shouldDisplayValidation ? ' display-validation': ''}`;
+
+  return <li className={messageClassNames}>
+    <div className="message-summary">
+      <div>
+        <input type="checkbox"></input>
+      </div>
+      <div className="sender" onClick={(e) => toggleExpandMessage(!shouldExpandMessage)}>
+        <a href="#" title={from.email}>{from.name}</a>
+      </div>
+      <div className="validation-cta" onClick={(e) => toggleDisplayValidation(!shouldDisplayValidation)}>✅</div>
+      <div className="subject" onClick={(e) => toggleExpandMessage(!shouldExpandMessage)}>
+        {subject}
+      </div>
+      <div>
+        {moment(date).fromNow()}
+      </div>
     </div>
-    <div className="subject">
-      {message.subject}
+    <div className="message-validation-display">
+      YEAH
     </div>
-    <div>
-      {moment(message.date).fromNow()}
+    <div className="message-peek">
+      yatta
     </div>
   </li>
-}
+};
 
 //TODO: Move into its own file once proto is done
 const Messages = ({messages}) => {

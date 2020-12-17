@@ -36,6 +36,16 @@ h6 {
   height: 4em;
   line-height: 4em;
   border: 1px solid blue;
+}
+
+.message.display-validation,
+.message.expanded {
+  height: auto;
+  min-height: 5em;
+  line-height: 2em;
+}
+
+.message-summary {
   display: flex;
 }
 
@@ -46,6 +56,22 @@ h6 {
 .message .sender {
   min-width: 15rem;
   width: 20rem;
+}
+
+.message-peek {
+  display: none;
+}
+
+.message-validation-display {
+  display: none;
+}
+
+.message.expanded .message-peek {
+  display: block;
+}
+
+.message.display-validation .message-validation-display {
+  display: block;
 }
 
 @media (--above-tablet) {
