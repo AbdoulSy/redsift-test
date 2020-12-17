@@ -27,8 +27,36 @@ h6 {
 }
 
 .message-list {
-  background-color: #bbb;
-  border: 4px solid red;
+  background-color: #eee;
+  padding: 0;
+  margin: 0;
+}
+
+.main {
+  display: flex;
+}
+
+aside {
+  width: 150px;
+  background-color: #eee;
+  border-right: 2px solid #aaa;
+}
+
+aside ul {
+  padding: 0;
+}
+
+aside li {
+  height: 2.5em;
+  border-bottom: 1px solid gray;
+  line-height: 2.5em;
+  font-size: 1.3rem;
+  list-style-type: none;
+  text-align: center;
+}
+
+aside li:hover {
+  background-color: #aaa;
 }
 
 .message {
@@ -36,9 +64,10 @@ h6 {
   height: 4em;
   cursor: pointer;
   line-height: 4em;
-  border: 1px solid blue;
   transition: height 0.5s;
   overflow: hidden;
+  background-color: #fff;
+  border-bottom: 1px solid gray;
 }
 
 .message.display-validation,
@@ -50,6 +79,7 @@ h6 {
 
 .message-summary {
   display: flex;
+  padding: 0 2rem;
 }
 
 .message .subject {
@@ -59,6 +89,12 @@ h6 {
 .message .sender {
   min-width: 15rem;
   width: 20rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.message .sender a {
+  text-decoration: none;
 }
 
 .message-peek {
