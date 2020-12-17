@@ -34,6 +34,7 @@ h6 {
 .message {
   list-style-type: none;
   height: 4em;
+  cursor: pointer;
   line-height: 4em;
   border: 1px solid blue;
 }

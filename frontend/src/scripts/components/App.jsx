@@ -35,7 +35,7 @@ const Message = ({message}) => {
       YEAH
     </div>
     <div className="message-peek">
-      yatta
+      {message.body}
     </div>
   </li>
 };
