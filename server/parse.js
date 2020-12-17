@@ -146,7 +146,7 @@ module.exports = function (got) {
     const {errors} = validationResult;
     const key = `${threadId}/${id}`;
 
-    if(errors && errors.action === "REJECT") {
+    if(errors && errors.action === "QUARANTINE") {
       const rejectedMessage = {
         id,
         threadId,

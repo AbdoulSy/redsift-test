@@ -5,7 +5,8 @@ import { SiftController, registerSiftController } from '@redsift/sift-sdk-web';
 
 const watchedStores = [
   'counts',
-  'messages'
+  'messages',
+  'spam',
 ];
 
 export default class MyController extends SiftController {
@@ -38,9 +39,10 @@ export default class MyController extends SiftController {
 
   getData() {
     console.log("====== GETTING DATA ======");
-    return Promise.all([this.getCounts(), this.getMessages()]).then(([counts, messages]) => ({
+    return Promise.all([this.getCounts(), this.getMessages(), this.getSpam()]).then(([counts, messages, spam]) => ({
       counts,
-      messages
+      messages,
+      spam
     }))
   }
 
@@ -57,6 +59,16 @@ export default class MyController extends SiftController {
         wpmTotal: ((values[1].value || 0) / (values[0].value || 1)).toFixed(2)
       };
     });
+  }
+
+  getSpam() {
+    return this.storage.getAll({
+      bucket: 'spam'
+    }).then((values) => {
+      console.log("========== GETTING SPAM ===========");
+      console.log({values});
+      return values.map(({ value }) => JSON.parse(value)) || [];
+    }); 
   }
 
   getMessages() {

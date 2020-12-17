@@ -26,6 +26,7 @@ const Message = ({message}) => {
       </div>
       { allValid ? <div className="validation-cta" onClick={(e) => toggleDisplayValidation(!shouldDisplayValidation)}>✅&nbsp;</div> : ""
 }
+      {!allValid ? "❌" : ""}
       <div className="subject" onClick={() => toggleExpandMessage(!shouldExpandMessage)}>
         {subject}
       </div>
@@ -62,6 +63,24 @@ const Messages = ({messages}) => {
   </ul>
 };
 
+const NavigableInbox = ({counts, messages, spam}) => {
+  const [navigationState, setNavLocation] = useState("inbox");
+
+  return  <div className="main" role="main">
+  <aside>
+    <nav>
+    <ul>
+      <li onClick={() => setNavLocation("inbox")}>inbox ({counts.messageTotal})</li>
+      <li onClick={() => setNavLocation("spam")}>spam</li>
+    </ul>
+    </nav>
+  </aside>
+  <section>
+    {navigationState === "inbox" ? <Messages messages={messages} /> : ""}
+  </section>
+</div>
+}
+
 
 
 class App extends Component {
@@ -72,13 +91,11 @@ class App extends Component {
 
   render() {
     const { t, data } = this.props;
-    const { counts, messages } = data;
 
     return (
       <div>
         <h1>{t('app:title-home')}</h1>
-        <h4>{t('app:description-home', {count: counts.messageTotal})}</h4>
-        <Messages messages={messages} />
+        <NavigableInbox {...data} />
       </div>
     );
   }
