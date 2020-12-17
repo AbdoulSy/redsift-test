@@ -15,11 +15,12 @@ export default class MyController extends SiftController {
   }
 
   loadView(state) {
-    console.log('email-sift: loadView', state);
+    console.log('email-sift: loadView2', state);
     // Register for storage update events on the "count" bucket so we can update the UI
     watchedStores.forEach(store => this.storage.subscribe([store], this.onStorageUpdate))
     switch (state.type) {
       case 'summary':
+        console.log("Summary >>>>>");
         return { html: 'summary.html', data: this.getData() };
       default:
         console.error('email-sift-web: unknown Sift type: ', state.type);
@@ -36,6 +37,7 @@ export default class MyController extends SiftController {
   }
 
   getData() {
+    console.log("====== GETTING DATA ======");
     return Promise.all([this.getCounts(), this.getMessages()]).then(([counts, messages]) => ({
       counts,
       messages
@@ -47,6 +49,8 @@ export default class MyController extends SiftController {
       bucket: 'counts',
       keys: ['MESSAGES', 'WORDS']
     }).then((values) => {
+      console.log("========== GETTING COUNTS ===========");
+      console.log({values});
       return {
         messageTotal: values[0].value || 0,
         wordTotal: values[1].value || 0,
@@ -59,6 +63,8 @@ export default class MyController extends SiftController {
     return this.storage.getAll({
       bucket: 'messages'
     }).then((values) => {
+      console.log("========== GETTING MESSAGES ===========");
+      console.log({values});
       return values.map(({ value }) => JSON.parse(value)) || [];
     });
   }

@@ -1,23 +1,41 @@
 @import url('https://fonts.googleapis.com/css?family=Raleway:200,400,500,700');
-@import "./breakpoints.css";
+@import './breakpoints.css';
 
 :root {
   --font-color: rgb(51, 51, 51);
   --background-color: #f5f5f5;
 }
 
-body, html {
+body,
+html {
   background: var(--background-color);
   color: var(--font-color);
   margin: 0;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: Raleway, sans-serif;
 }
 
 .responsive-text-large {
   font-size: 1em;
+}
+
+.message-list {
+  background-color: #bbb;
+  border: 2px solid red;
+}
+
+.message {
+  list-style-type: none;
+  height: 2em;
+  line-height: 2em;
+  border: 1px solid blue;
 }
 
 @media (--above-tablet) {
