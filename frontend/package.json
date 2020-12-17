@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "Display DMARC results for an inbox with a React Frontend",
   "scripts": {
-    "build": "gulp build",
+    "build": "gulp build-js",
     "build:css": "NODE_ENV=production node ./scripts/build-css",
-    "storybook": "start-storybook -s ./public -p 6007",
+    "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
   },
   "devDependencies": {
@@ -28,6 +28,7 @@
     "i18next": "^11.9.0",
     "i18next-browser-languagedetector": "^2.1.0",
     "i18next-xhr-backend": "^1.5.0",
+    "moment": "^2.29.1",
     "postcss": "^7.0.5",
     "postcss-cssnext": "^3.0.2",
     "postcss-easy-import": "^3.0.0",

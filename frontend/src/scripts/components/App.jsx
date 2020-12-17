@@ -4,12 +4,20 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { translate } from 'react-i18next';
+import moment from "moment";
+
 
 const Message = ({message, key}) => {
   console.log("MSG", {message});
   return <li className="message">
-    <div>
+    <div className="sender">
+      {message.from.name}
+    </div>
+    <div className="subject">
       {message.subject}
+    </div>
+    <div>
+      {moment(message.date).fromNow()}
     </div>
   </li>
 }
