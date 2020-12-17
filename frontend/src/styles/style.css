@@ -37,12 +37,14 @@ h6 {
   cursor: pointer;
   line-height: 4em;
   border: 1px solid blue;
+  transition: height 0.5s;
+  overflow: hidden;
 }
 
 .message.display-validation,
 .message.expanded {
   height: auto;
-  min-height: 5em;
+  min-height: 15em;
   line-height: 2em;
 }
 
@@ -60,19 +62,19 @@ h6 {
 }
 
 .message-peek {
-  display: none;
+  height: 0;
 }
 
 .message-validation-display {
-  display: none;
+  height: 0;
 }
 
 .message.expanded .message-peek {
-  display: block;
+  height: auto;
 }
 
 .message.display-validation .message-validation-display {
-  display: block;
+  height: auto;
 }
 
 @media (--above-tablet) {

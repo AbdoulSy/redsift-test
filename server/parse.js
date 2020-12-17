@@ -3,6 +3,70 @@
 */
 'use strict';
 
+/**
+ * 
+ * @param {string} headerString 
+ * @param {string} regexp
+ */
+function isHeaderPassing (headerString, regexp) {
+  console.log("validateHeader", regexp);
+  if(!headerString) return false;
+  const passRegexp = regexp;
+  const matches = headerString.match(passRegexp);
+
+  console.log("matches", matches);
+
+  return !!matches;
+}
+
+/**
+ * 
+ * @param {string} headerString 
+ */
+function validateSPFHeader(headerString) {
+  const regexp = 'spf=pass';
+
+  return isHeaderPassing(headerString, regexp);
+}
+
+/**
+ * 
+ * @param {string} headerString 
+ */
+function validateDKIMHeader(headerString) {
+  const regexp = 'dkim=pass';
+
+  return isHeaderPassing(headerString, regexp);
+}
+
+/**
+ * 
+ * @param {string} headerString 
+ */
+function validateDMARCHeader(headerString) {
+  const regexp = 'dmarc=pass';
+
+  return isHeaderPassing(headerString, regexp);
+}
+
+/**
+ * 
+ * @param {{
+ *  "Authentication-Results": string
+ * }} headers 
+ */
+function validateHeaders (headers) {
+  console.log("==================DATA VALIDATION===========");
+  console.log({headers: headers['Authentication-Results']});
+  /** @type string */
+  const authResultHeaders = headers['Authentication-Results'];
+  return {
+    validSpf: validateSPFHeader(authResultHeaders),
+    validDKIM: validateDKIMHeader(authResultHeaders),
+    validDMARC: validateDMARCHeader(authResultHeaders)
+  }
+}
+
 // Javascript nodes are run in a Node.js sandbox so you can require dependencies following the node paradigm
 // e.g. var moment = require('moment');
 
@@ -16,19 +80,24 @@ module.exports = function (got) {
   const results = inData.data.map(({ value: valueBuffer }) => {
     // Parse the JMAP information for each message more info here: https://docs.redsift.com/docs/server-code-jmap
     const emailJmap = JSON.parse(valueBuffer);
-    const { id, threadId, subject, textBody, strippedHtmlBody } = emailJmap;
+    const { id, threadId, subject, textBody, strippedHtmlBody, headers, from, date } = emailJmap;
+
+    console.log("==================DATA ARRIVED===========");
 
     // Not all emails contain a textBody so we do a cascade selection
     const body = textBody || strippedHtmlBody || '';
     const wordCount = countWords(body);
-
+    const validationResult = validateHeaders(headers);
     const key = `${threadId}/${id}`;
     const value = {
       id,
       body,
       subject,
       threadId,
-      wordCount
+      wordCount,
+      from,
+      date,
+      validationResult
     };
 
     // Emit into "messages-st" store so count can be calculated by the "Count" node

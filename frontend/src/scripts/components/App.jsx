@@ -15,6 +15,8 @@ const Message = ({message}) => {
   const maybeExpandMessage = `message ${shouldExpandMessage ? ' expanded': ''}`;
   const messageClassNames = `${maybeExpandMessage}${shouldDisplayValidation ? ' display-validation': ''}`;
 
+  console
+
   return <li className={messageClassNames}>
     <div className="message-summary">
       <div>
@@ -34,16 +36,24 @@ const Message = ({message}) => {
     <div className="message-validation-display">
       YEAH
     </div>
-    <div className="message-peek">
+    {/* <div className="message-peek">
       {message.body}
-    </div>
+    </div> */}
   </li>
 };
 
 //TODO: Move into its own file once proto is done
 const Messages = ({messages}) => {
+  const sortMessages = (a, b) => {
+    const aDate = new Date(a.date);
+    const bDate = new Date(b.date);
+    
+    return bDate - aDate;
+  }
+  const sortedMessages = messages.sort(sortMessages);
+
   return <ul className="message-list">
-    { messages.map((m, key) => <Message message={m} key={key} />) }
+    { sortedMessages.map((m, key) => <Message message={m} key={key} />) }
   </ul>
 };
 
