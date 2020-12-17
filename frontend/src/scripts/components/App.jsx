@@ -9,24 +9,24 @@ import moment from "moment";
 
 const Message = ({message}) => {
   console.log("MSG", {message});
-  const { from, subject, date } = message;
+  const { from, subject, date, validationResult } = message;
   const [shouldExpandMessage, toggleExpandMessage] = useState(false);
   const [shouldDisplayValidation, toggleDisplayValidation] = useState(false);
   const maybeExpandMessage = `message ${shouldExpandMessage ? ' expanded': ''}`;
   const messageClassNames = `${maybeExpandMessage}${shouldDisplayValidation ? ' display-validation': ''}`;
+  const {validDKIM, validDMARC, validSPF} = validationResult;
+  const allValid = validDKIM && validDMARC && validSPF;
 
   console
 
   return <li className={messageClassNames}>
     <div className="message-summary">
-      <div>
-        <input type="checkbox"></input>
-      </div>
-      <div className="sender" onClick={(e) => toggleExpandMessage(!shouldExpandMessage)}>
+      <div className="sender" onClick={() => toggleExpandMessage(!shouldExpandMessage)}>
         <a href="#" title={from.email}>{from.name}</a>
       </div>
-      <div className="validation-cta" onClick={(e) => toggleDisplayValidation(!shouldDisplayValidation)}>✅</div>
-      <div className="subject" onClick={(e) => toggleExpandMessage(!shouldExpandMessage)}>
+      { allValid ? <div className="validation-cta" onClick={(e) => toggleDisplayValidation(!shouldDisplayValidation)}>✅&nbsp;</div> : ""
+}
+      <div className="subject" onClick={() => toggleExpandMessage(!shouldExpandMessage)}>
         {subject}
       </div>
       <div>
@@ -34,11 +34,16 @@ const Message = ({message}) => {
       </div>
     </div>
     <div className="message-validation-display">
-      YEAH
+    <p>
+      {validDKIM ? "✅ valid dkim"  : ""}
+    </p>
+    <p>
+      {validSPF ? "✅ valid spf"  : ""}
+    </p>
+    <p>
+      {validDMARC ? "✅ valid dmarc"  : ""}
+    </p>
     </div>
-    {/* <div className="message-peek">
-      {message.body}
-    </div> */}
   </li>
 };
 

@@ -61,7 +61,7 @@ function validateHeaders (headers) {
   /** @type string */
   const authResultHeaders = headers['Authentication-Results'];
   return {
-    validSpf: validateSPFHeader(authResultHeaders),
+    validSPF: validateSPFHeader(authResultHeaders),
     validDKIM: validateDKIMHeader(authResultHeaders),
     validDMARC: validateDMARCHeader(authResultHeaders)
   }
