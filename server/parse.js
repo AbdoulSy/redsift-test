@@ -8,7 +8,7 @@
  * @param {string} headerString 
  * @param {string} regexp
  */
-function isHeaderPassing (headerString, regexp) {
+function findStringInHeader (headerString, regexp) {
   console.log("validateHeader", regexp);
   if(!headerString) return false;
   const passRegexp = regexp;
@@ -26,7 +26,7 @@ function isHeaderPassing (headerString, regexp) {
 function validateSPFHeader(headerString) {
   const regexp = 'spf=pass';
 
-  return isHeaderPassing(headerString, regexp);
+  return findStringInHeader(headerString, regexp);
 }
 
 /**
@@ -35,18 +35,66 @@ function validateSPFHeader(headerString) {
  */
 function validateDKIMHeader(headerString) {
   const regexp = 'dkim=pass';
+  const fail = 'dkim=fail';
 
-  return isHeaderPassing(headerString, regexp);
+  const isDKIMPassing = findStringInHeader(headerString, regexp);
+  //RFC 8601  Multi-tiered Authentication - if dkim=fail appears once in the email headers
+  //Fail the DKIM validation 
+  const isDKIMNotFailing = !findStringInHeader(headerString, fail);
+
+  return isDKIMPassing && isDKIMNotFailing;
+}
+
+/**
+ * 
+ * @param {string} headerString 
+ * @param {boolean} validatesSPF
+ * @param {boolean} validatesDKIM
+ */
+function validateDMARCHeader(headerString, validatesSPF, validatesDKIM) {
+  const pass = 'dmarc=pass';
+  const bestGuessPass = 'dmarc=bestguesspass'
+  const isEasilyPassing = findStringInHeader(headerString, pass);
+  const validatesBothSPFAndDKIM = validatesSPF && validatesDKIM;
+
+  return isEasilyPassing || findStringInHeader(headerString, bestGuessPass) || validatesBothSPFAndDKIM
 }
 
 /**
  * 
  * @param {string} headerString 
  */
-function validateDMARCHeader(headerString) {
-  const regexp = 'dmarc=pass';
+function findPolicyInHeader(headerString) {
+  if(!headerString) return;
+  const policyExpressionRegexp =/\(p\=([a-z]+).sp\=([a-z]+).dis\=([a-z]+)\)/i;
+  const foundPolicy = headerString.match(policyExpressionRegexp);
 
-  return isHeaderPassing(headerString, regexp);
+  console.log("==== POLICY:", {foundPolicy});
+  return foundPolicy;
+}
+
+/**
+ * 
+ * @param {string} authResultHeaders 
+ * @param {boolean} isDMARCValid 
+ */
+function handleErrors(authResultHeaders, isDMARCValid, policy) {
+  if(!isDMARCValid) {
+    const spfFail = 'spf=fail';
+    //DKIM check is already done above
+    const isSPFFailing = findStringInHeader(authResultHeaders, spfFail);
+    let action;
+    if(policy) {
+      const [,p,sp,dis] = policy;
+      action = p; //domain policy
+    }
+    return {
+      isSPFFailing,
+      action
+    }
+  }
+
+  return {}
 }
 
 /**
@@ -60,10 +108,17 @@ function validateHeaders (headers) {
   console.log({headers: headers['Authentication-Results']});
   /** @type string */
   const authResultHeaders = headers['Authentication-Results'];
+  const validatesSPF = validateSPFHeader(authResultHeaders);
+  const validatesDKIM = validateDKIMHeader(authResultHeaders);
+  const validatesDMARC = validateDMARCHeader(authResultHeaders, validatesSPF, validatesDKIM);
+  const policy = findPolicyInHeader(authResultHeaders);
+  const errors = handleErrors(authResultHeaders, validatesDMARC, policy);
   return {
-    validSPF: validateSPFHeader(authResultHeaders),
-    validDKIM: validateDKIMHeader(authResultHeaders),
-    validDMARC: validateDMARCHeader(authResultHeaders)
+    validSPF: validatesSPF,
+    validDKIM: validatesDKIM,
+    validDMARC: validatesDMARC,
+    policy,
+    errors
   }
 }
 
@@ -88,7 +143,24 @@ module.exports = function (got) {
     const body = textBody || strippedHtmlBody || '';
     const wordCount = countWords(body);
     const validationResult = validateHeaders(headers);
+    const {errors} = validationResult;
     const key = `${threadId}/${id}`;
+
+    if(errors && errors.action === "REJECT") {
+      const rejectedMessage = {
+        id,
+        threadId,
+        subject,
+        validationResult
+      }
+
+      return [{
+        key,
+        value: rejectedMessage,
+        name: "spam"
+      }];
+    }
+
     const value = {
       id,
       body,
