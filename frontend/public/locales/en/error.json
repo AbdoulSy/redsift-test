@@ -1,1 +1,5 @@
-{}
+{
+    "invalid-spf": "❌ spf headers missingo r invalid, the email might not come from who you thing it is",
+    "invalid-dkim": "❌ DKIM missing or invalid, there is a chance this email might have been altered (or the sender's DNS is misconfigured) be extra vigilant",
+    "invalid-dmarc":"❌ DMARC not valid, make sure that spf and dkim are valid"
+}

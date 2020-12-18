@@ -1,3 +1,6 @@
+// @ts-nocheck
+/* eslint no-console: 0 */
+
 /**
  * React Dmarc Sift. Frontend controller entry point.
  */
@@ -16,7 +19,7 @@ export default class MyController extends SiftController {
   }
 
   loadView(state) {
-    console.log('email-sift: loadView2', state);
+    console.log('email-sift: loadView', state);
     // Register for storage update events on the "count" bucket so we can update the UI
     watchedStores.forEach(store => this.storage.subscribe([store], this.onStorageUpdate))
     switch (state.type) {
@@ -38,8 +41,11 @@ export default class MyController extends SiftController {
   }
 
   getData() {
-    console.log("====== GETTING DATA ======");
-    return Promise.all([this.getCounts(), this.getMessages(), this.getSpam()]).then(([counts, messages, spam]) => ({
+    return Promise.all([
+      this.getCounts(),
+      this.getMessages(), 
+      this.getSpam()]
+      ).then(([counts, messages, spam]) => ({
       counts,
       messages,
       spam
@@ -49,13 +55,13 @@ export default class MyController extends SiftController {
   getCounts() {
     return this.storage.get({
       bucket: 'counts',
-      keys: ['MESSAGES', 'WORDS']
+      keys: ['MESSAGES', 'WORDS', 'SPAM', 'REJECTED']
     }).then((values) => {
-      console.log("========== GETTING COUNTS ===========");
-      console.log({values});
       return {
         messageTotal: values[0].value || 0,
         wordTotal: values[1].value || 0,
+        spamTotal: values[2].value || 0,
+        rejectedTotal: values[3].value || 0,
         wpmTotal: ((values[1].value || 0) / (values[0].value || 1)).toFixed(2)
       };
     });
@@ -65,8 +71,6 @@ export default class MyController extends SiftController {
     return this.storage.getAll({
       bucket: 'spam'
     }).then((values) => {
-      console.log("========== GETTING SPAM ===========");
-      console.log({values});
       return values.map(({ value }) => JSON.parse(value)) || [];
     }); 
   }
@@ -75,12 +79,9 @@ export default class MyController extends SiftController {
     return this.storage.getAll({
       bucket: 'messages'
     }).then((values) => {
-      console.log("========== GETTING MESSAGES ===========");
-      console.log({values});
       return values.map(({ value }) => JSON.parse(value)) || [];
     });
   }
-
 }
 
 // Do not remove. The Sift is responsible for registering its views and controllers

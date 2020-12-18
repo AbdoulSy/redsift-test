@@ -4,7 +4,6 @@
 import { SiftView, registerSiftView } from '@redsift/sift-sdk-web';
 import React from 'react';
 import { render } from 'react-dom';
-
 import { I18nextProvider } from 'react-i18next';
 import i18n from './libs/i18n';
 
@@ -32,7 +31,6 @@ export default class MyView extends SiftView {
     ),
     document.querySelector('#root'));
   }
-
 }
 
 registerSiftView(new MyView(window));

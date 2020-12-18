@@ -16,7 +16,7 @@
         "gmailEmails":{
           "filter":{
             "conditions":[{
-              "date": "between now and 1 week before now"
+              "date": "between now and 1 day before now"
             }],
             "operator": "AND"
           },
@@ -40,7 +40,8 @@
       },
       "outputs": {
         "messages-st": {},
-        "messages": {}
+        "messages": {},
+        "spam": {}
       }
     },
     {
@@ -67,6 +68,9 @@
           "key$schema":"string"
         },
         "messages": {
+          "key$schema": "string/string"
+        },
+        "spam": {
           "key$schema": "string/string"
         }
       }
